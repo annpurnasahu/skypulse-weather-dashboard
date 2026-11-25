@@ -1,0 +1,14 @@
+
+# Private API configuration
+js/config.js
+
+# Dependencies
+node_modules/
+
+# Environment files
+.env
+.env.local
+
+# System files
+.DS_Store
+Thumbs.db
