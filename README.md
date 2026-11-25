@@ -1,32 +1,66 @@
+# 🌦️ SkyPulse – Weather Intelligence Dashboard
 
-# SkyPulse - Weather Intelligence Dashboard
+A modern, responsive weather dashboard designed to provide real-time weather information through a clean and interactive user interface.
 
-A modern and responsive weather forecasting application.
+## 🚀 Features
 
-## Project Information
+- Live weather information
+- Search weather by city
+- Current location detection
+- Temperature and weather conditions
+- Weather forecast information
+- Dynamic weather updates
+- Responsive dashboard design
 
-- Project: Datheon Task 3
-- Name: SkyPulse
-- Category: Frontend Web Development
-
-## Technologies
+## 🛠️ Technologies Used
 
 - HTML5
 - CSS3
 - JavaScript
-- Fetch API
-- OpenWeatherMap API
+- Weather API
+- Browser Geolocation API
 
-## Features
+## 📸 Project Preview
 
-- Global city search
-- Real-time weather updates
-- Weather condition indicators
-- Humidity and wind speed
-- Five-day weather forecast
-- Responsive interface
-- API error handling
+Add your deployed website screenshot here after deployment.
 
-## Developer
+## 💻 Installation and Setup
 
-Annpurna Sahu
+1. Clone this repository:
+
+   ```bash
+   git clone YOUR_GITHUB_REPOSITORY_URL
+   ```
+
+2. Open the project folder in VS Code.
+
+3. Open `index.html` using Live Server.
+
+4. Configure your weather API integration as required.
+
+## 🌐 Live Demo
+
+Coming Soon – Deployment on Vercel.
+
+## 📂 Project Structure
+
+```text
+SkyPulse-Weather-Dashboard/
+├── index.html
+├── style.css
+├── app.js
+└── README.md
+```
+
+Update the file structure above if your actual project uses different folder names.
+
+## 👩‍💻 Developer
+
+**Annpurna Sahu**
+
+Computer Science & Engineering Student
+
+## 📄 License
+
+This project is created for educational and internship purposes.
+
