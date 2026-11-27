@@ -4,7 +4,7 @@
    PHASE 3 - LIVE API INTEGRATION
 ========================================= */
 
-import { OPENWEATHER_API_KEY } from "./config.js";
+
 
 "use strict";
 
@@ -17,7 +17,7 @@ const searchBtn = document.getElementById("searchBtn");
 const loader = document.getElementById("loader");
 const errorMessage = document.getElementById("errorMessage");
 
-const API_BASE = "https://api.openweathermap.org";
+
 
 // PHASE 4 - ADVANCED FEATURES
 
@@ -53,12 +53,7 @@ function initializeApp() {
 
     renderRecentSearches();
 
-    if (!OPENWEATHER_API_KEY ||
-        OPENWEATHER_API_KEY === "PASTE_YOUR_API_KEY_HERE") {
-
-        showError("Please configure your weather API key.");
-        return;
-    }
+    
 
     loadWeather("Bhopal");
 
@@ -108,57 +103,32 @@ async function loadWeather(city) {
         searchBtn.disabled = true;
         searchBtn.textContent = "Loading...";
 
-        // STEP 1: FIND CITY COORDINATES
+        
+        const response = await fetch(
+            `/api/weather?city=${encodeURIComponent(city)}`
+        );
 
-        const geoURL =
-            `${API_BASE}/geo/1.0/direct?q=${encodeURIComponent(city)}` +
-            `&limit=1&appid=${OPENWEATHER_API_KEY}`;
+        const result = await response.json();
 
-        const geoResponse = await fetch(geoURL);
-
-        if (!geoResponse.ok) {
-            throw new Error("Unable to search for this city.");
+        if (!response.ok) {
+            throw new Error(result.error || "Weather data unavailable.");
         }
 
-        const locations = await geoResponse.json();
+        updateCurrentWeather(result.current, result.location);
+        updateForecast(result.forecast);
 
-        if (!locations.length) {
-            throw new Error("City not found. Please check the spelling.");
-        }
+        lastSearchedCity = city;
 
-        const location = locations[0];
+        saveRecentSearch(
+            result.location.name,
+            result.location.country
+        );
 
-        const lat = location.lat;
-        const lon = location.lon;
+        lastUpdated.textContent =
+            "Last updated: " + new Date().toLocaleTimeString("en-IN");
 
-        // STEP 2: FETCH CURRENT WEATHER + FORECAST
+        console.log("Live weather updated successfully.");
 
-        const currentURL =
-            `${API_BASE}/data/2.5/weather?lat=${lat}&lon=${lon}` +
-            `&units=metric&appid=${OPENWEATHER_API_KEY}`;
-
-        const forecastURL =
-            `${API_BASE}/data/2.5/forecast?lat=${lat}&lon=${lon}` +
-            `&units=metric&appid=${OPENWEATHER_API_KEY}`;
-
-        const [currentResponse, forecastResponse] =
-            await Promise.all([
-                fetch(currentURL),
-                fetch(forecastURL)
-            ]);
-
-        if (!currentResponse.ok || !forecastResponse.ok) {
-            throw new Error(
-                "Weather service unavailable. Please try again."
-            );
-        }
-
-        const currentData = await currentResponse.json();
-        const forecastData = await forecastResponse.json();
-
-        // STEP 3: UPDATE DASHBOARD
-
-        updateCurrentWeather(currentData, location);
         updateForecast(forecastData);
         // PHASE 4 - SAVE RECENT SEARCH
 
@@ -630,31 +600,34 @@ function getCurrentLocation() {
 
                 console.log("Location coordinates received:", lat, lon);
 
-                const url =
-                    `${API_BASE}/geo/1.0/reverse?lat=${lat}` +
-                    `&lon=${lon}&limit=1&appid=${OPENWEATHER_API_KEY}`;
+                const response = await fetch(
+                   `/api/weather?lat=${lat}&lon=${lon}`
+                );
 
-                const response = await fetch(url);
+                const result = await response.json();
 
                 if (!response.ok) {
-                    throw new Error(
-                        "Unable to retrieve your location details."
-                    );
+                    throw new Error(result.error || "Location weather unavailable.");
                 }
-
-                const locations = await response.json();
-
-                if (!locations.length) {
-                    throw new Error("No city found for your location.");
-                }
-
-                const place = locations[0];
-
-                const city = `${place.name},${place.country}`;
+                const city =
+                    `${result.location.name}, ${result.location.country}`;
 
                 cityInput.value = city;
 
-                await loadWeather(city);
+                updateCurrentWeather(result.current, result.location);
+                updateForecast(result.forecast);
+
+                lastSearchedCity = city;
+
+                saveRecentSearch(
+                    result.location.name,
+                    result.location.country
+                );
+
+                lastUpdated.textContent =
+                    "Last updated: " + new Date().toLocaleTimeString("en-IN");
+
+                console.log("Location weather updated successfully.");
 
             } catch (error) {
 
